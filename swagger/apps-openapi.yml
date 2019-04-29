@@ -1,0 +1,382 @@
+  openapi: "3.0.0"
+  info: 
+    version: 1.0.0
+    title: Github Assistant – A Github Assistant for Collaborative Development
+  servers:
+    - url: http://localhost:3000/
+      description: Local Dev
+    - url: https://github-assistant-slack.herokuapp.com/
+      description: Staging Env
+  tags:
+  - name: "Login"
+    description: "Everything about login and auth"
+  - name: "Slack application"
+    description: "APIs on Slack application"
+  - name: "Slack-bot"
+    description: "Operations run with respect to GitHub bot"
+  paths:
+    /auth/login:                    
+      get:
+        tags:
+        - "Login"
+        summary: Sends the github URL for github assistent application to login via Github OAuth
+        responses:
+          200:
+            description: GIthub URL to login to GitHub
+            content:
+              application/json:
+                schema:
+                  required:
+                    - url
+                  properties:
+                    url:
+                      type: string
+                      example: https://github.com/login/oauth/authorize
+                                        
+    /api/channels:
+      get:
+        tags:
+        - "Slack application"
+        summary: Retrive all channels
+        responses:
+          200:
+            description: Retrive the list of channels
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - channelId
+                      - channelTitle
+                      - userChannel
+                      - messages
+                    properties:
+                      channelId:
+                        type: string
+                        example: 5c1ede4f4bacd27d5cd4a1c7
+                      channelTitle:
+                        type: string
+                        example: General
+                      userChannel:
+                        type: boolean
+                        example: false
+                      messages:
+                        type: array
+                        items: 
+                          type: string
+                        example: []
+           
+    /api/channels/:channelId:
+      get:
+        tags:
+        - "Slack application"
+        summary: Retrive a specific channel
+        parameters:
+          - name: channelId
+            in: path
+            required: true
+            description: ID of the channel which will be fetched
+            schema:
+              type: string
+        responses:
+          200:
+            description: Retrive a specific channel
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - channelId
+                      - channelTitle
+                      - userChannel
+                      - messages
+                    properties:
+                      channelId:
+                        type: string
+                        example: 5c1ede4f4bacd27d5cd4a1c7
+                      channelTitle:
+                        type: string
+                        example: General
+                      userChannel:
+                        type: boolean
+                        example: false
+                      messages:
+                        type: array
+                        items: 
+                          type: string
+                        example: []
+    
+    
+      put:
+        summary: Send message to channels or users. Activate GitBot and follow git APIs based on query params
+        tags:
+        - "Slack-bot"
+        - "Slack application"
+        parameters:
+          - name: type
+            in: query
+            required: true
+            description: Type of message. Message or Command to gitbot
+            schema:
+              type: string
+              enum: [gitbot]
+        requestBody:
+          description: Send message to channels or users. Activate GitBot and follow git APIs based on query params
+          required: true
+          content:
+            application/json:
+              schema:
+                required:
+                  - channelId
+                  - messageValue
+                properties:
+                  channelId:
+                    type: string
+                    example: 5c1ede4f4bacd27d5cd4a1c7                
+                  messageValue:
+                    type: string
+                    example: Hello or create repo abc
+        responses:
+          200:
+            description: Retrive the status of gitCmd came from GIT API
+            content:
+              application/json:
+                schema:
+                  required:
+                    - channelId
+                    - channelTitle
+                    - userChannel
+                    - messages
+                  properties:
+                    channelId:
+                      type: string
+                      example: 5c1ede4f4bacd27d5cd4a1c7                
+                    channelTitle:
+                      type: string
+                      example: Channel 1
+                    userChannel:
+                      type: boolean
+                      example: false
+                    messages:
+                      type: array
+                      items: 
+                        type: string
+                      example: []
+    
+    /api/gitbot/createrepo/:channelId :
+      put:
+        summary: Create repo in github account via gitbot and send success message to channel
+        tags:
+        - "Slack-bot"
+        parameters:
+          - name: channelId
+            in: path
+            required: true
+            description: ID of the channel where git bot is activated
+            schema:
+              type: string
+        requestBody:
+          description: Send data necessary to create repo
+          required: true
+          content:
+            application/json:
+              schema:
+                required:
+                  - name
+                  - private
+                properties:
+                  name:
+                    type: string
+                    example: Sample-Repo-1                
+                  private:
+                    type: boolean
+                    example: false
+        responses:
+          200:
+            description: Sends the updated channle with a success message
+            content:
+              application/json:
+                schema:
+                  required:
+                    - channelId
+                    - channelTitle
+                    - userChannel
+                    - messages
+                  properties:
+                    channelId:
+                      type: string
+                      example: 5c1ede4f4bacd27d5cd4a1c7                
+                    channelTitle:
+                      type: string
+                      example: Channel 1
+                    userChannel:
+                      type: boolean
+                      example: false
+                    messages:
+                      type: array
+                      items: 
+                        type: string
+                      example: []
+                      
+    /api/gitbot/reportissue/:channelId :
+      put:
+        summary: Reports an issue for a repo in github  via gitbot and send success message to channel
+        tags:
+        - "Slack-bot"
+        parameters:
+          - name: channelId
+            in: path
+            required: true
+            description: ID of the channel where git bot is activated
+            schema:
+              type: string
+        requestBody:
+          description: Send data necessary to report an issue
+          required: true
+          content:
+            application/json:
+              schema:
+                required:
+                  - issue
+                  - repo
+                properties:
+                  issue:
+                    type: object
+                    example: {title: sample issue, body: sample desc} 
+                  repo:
+                    type: string
+                    example: Sample-Repo-1
+        responses:
+          200:
+            description: Sends the updated channle with a success message
+            content:
+              application/json:
+                schema:
+                  required:
+                    - channelId
+                    - channelTitle
+                    - userChannel
+                    - messages
+                  properties:
+                    channelId:
+                      type: string
+                      example: 5c1ede4f4bacd27d5cd4a1c7                
+                    channelTitle:
+                      type: string
+                      example: Channel 1
+                    userChannel:
+                      type: boolean
+                      example: false
+                    messages:
+                      type: array
+                      items: 
+                        type: string
+                      example: []
+                      
+    /api/gitbot/getissues/:channelId :
+      put:
+        summary: Retrieves open issues of a github repo via gitbot and sends the issues as message to channel
+        tags:
+        - "Slack-bot"
+        parameters:
+          - name: channelId
+            in: path
+            required: true
+            description: ID of the channel where git bot is activated
+            schema:
+              type: string
+        requestBody:
+          description: Send data necessary to retrieve open issues
+          required: true
+          content:
+            application/json:
+              schema:
+                required:
+                  - repo
+                properties:
+                  repo:
+                    type: string
+                    example: Sample-Repo-1
+        responses:
+          200:
+            description: Sends the updated channel with the open issues in messages
+            content:
+              application/json:
+                schema:
+                  required:
+                    - channelId
+                    - channelTitle
+                    - userChannel
+                    - messages
+                  properties:
+                    channelId:
+                      type: string
+                      example: 5c1ede4f4bacd27d5cd4a1c7                
+                    channelTitle:
+                      type: string
+                      example: Channel 1
+                    userChannel:
+                      type: boolean
+                      example: false
+                    messages:
+                      type: array
+                      items: 
+                        type: string
+                      example: []
+    
+    /api/gitbot/adduser/:channelId :
+      put:
+        summary: Adds user as a collaborator to a github repo via gitbot and sends the success message to channel
+        tags:
+        - "Slack-bot"
+        parameters:
+          - name: channelId
+            in: path
+            required: true
+            description: ID of the channel where git bot is activated
+            schema:
+              type: string
+        requestBody:
+          description: Send data necessary to retrieve open issues
+          required: true
+          content:
+            application/json:
+              schema:
+                required:
+                  - repo
+                properties:
+                  repo:
+                    type: string
+                    example: Sample-Repo-1
+        responses:
+          200:
+            description: Sends the channel with success message
+            content:
+              application/json:
+                schema:
+                  required:
+                    - channelId
+                    - channelTitle
+                    - userChannel
+                    - messages
+                  properties:
+                    channelId:
+                      type: string
+                      example: 5c1ede4f4bacd27d5cd4a1c7                
+                    channelTitle:
+                      type: string
+                      example: Channel 1
+                    userChannel:
+                      type: boolean
+                      example: false
+                    messages:
+                      type: array
+                      items: 
+                        type: string
+                      example: []
+                        
+                      

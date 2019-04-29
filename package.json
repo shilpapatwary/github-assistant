@@ -1,0 +1,57 @@
+{
+  "name": "team-3-github-assistant",
+  "version": "1.0.0",
+  "description": "1. Build a conversational interface for github, with the following functionality      - Users should be able to:         - Create Repository         - Add github users as collaborators to a repository Create Issues in a project         - Get List of open issues in a project     - Messaging with other users:         - Users should be able to send and receive messages from other users          - Users should be able to send commands to the bot while messaging other users. The response from the bot needs to be visible to both users 2. Reference: Github for slack",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --timeout 10000 --exit",
+    "client": "cd UI/github-assistant && npm start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "start": "node server.js",
+    "heroku-postbuild": "cd UI/github-assistant && npm install --only=dev && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab-sapient.stackroute.in/xt-fsd-b2-capstone-projects/team-3-github-assistant.git"
+  },
+  "engines": {
+    "node": "10.15.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bcrypt": "^3.0.4",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "connect-redis": "^3.4.0",
+    "cookie-parser": "^1.4.4",
+    "cookie-session": "^2.0.0-beta.3",
+    "cors": "^2.8.5",
+    "dotenv": "^6.2.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "heroku": "^7.21.0",
+    "jsonwebtoken": "^8.5.0",
+    "mongoose": "^5.4.13",
+    "morgan": "^1.9.1",
+    "octonode": "^0.9.5",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "socket.io": "^2.2.0",
+    "swagger-ui-express": "^4.0.2",
+    "typesafe-actions": "^3.0.0",
+    "url": "^0.11.0",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "concurrently": "^4.1.0",
+    "mocha": "^6.0.2",
+    "supertest": "^3.4.2"
+  }
+}

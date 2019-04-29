@@ -1,0 +1,41 @@
+{
+  "channelsList": [
+    {
+      "channelId": "101",
+      "channelTitle": "General",
+      "messages": [
+        {
+          "messageId": "1001",
+          "messageValue": "Hello all"
+        },
+        {
+          "messageId": "1002",
+          "messageValue": "Good morning!"
+        },
+        {
+          "messageId": "1003",
+          "messageValue": "Welcome back!"
+        }
+      ]
+    },
+    {
+      "channelId": "102",
+      "channelTitle": "Publicis.groupe",
+      "messages": [
+        {
+          "messageId": "7001",
+          "messageValue": "How's the josh"
+        },
+        {
+          "messageId": "7002",
+          "messageValue": "High"
+        },
+        {
+          "messageId": "7003",
+          "messageValue": "Today's plan is ..."
+        }
+      ]
+    }
+  ],
+  "currentChannel": "101"
+}

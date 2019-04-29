@@ -1,0 +1,44 @@
+image: node:10.12.0
+
+services:
+ - mongo:latest
+
+stages: 
+  - build
+  - ui-build
+  - test
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+install-dependencies:
+  stage: build
+  script: 
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+    
+job 2:
+  stage: ui-build
+  script:
+    - cd UI/github-assistant/ && npm install
+
+api-tests:
+  stage: test
+  script:
+    - npm run test
+
+ui-tests:
+  stage: test
+  script:
+    - cd UI/github-assistant/ && npm install && npm run test
+
+heroku-deployment:
+  stage: deploy
+  script:
+    - (echo "machine api.heroku.com"; echo "  login gankunna@publicisgroupe.net"; echo "  password $HEROKU_PASSWORD") > ~/_netrc
+    - (echo "machine git.heroku.com"; echo "  login gankunna@publicisgroupe.net"; echo "  password $HEROKU_PASSWORD") >> ~/_netrc
+    - git push https://heroku:$HEROKU_PASSWORD@git.heroku.com/github-assistant-slack.git HEAD:master
